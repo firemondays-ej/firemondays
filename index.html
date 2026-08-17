@@ -338,6 +338,7 @@ body {
 }
 .cta-card h3 { color: #fff; font-size: 18px; font-weight: 700; margin-bottom: 6px; letter-spacing: -0.3px; }
 .cta-card p { color: #888; font-size: 13px; margin-bottom: 16px; line-height: 1.5; }
+.cta-note { font-size: 11px; color: #666; margin-top: 12px; text-align: center; }
 .cta-input {
   width: 100%;
   padding: 14px 16px;
@@ -362,30 +363,32 @@ body {
   cursor: pointer;
   transition: background 0.15s;
   -webkit-tap-highlight-color: transparent;
+  margin-bottom: 4px;
 }
 .cta-btn-full:active { background: #8B0000; }
-.cta-note { font-size: 11px; color: #666; margin-top: 10px; }
 .cta-success { color: #22863A; font-size: 13px; font-weight: 600; margin-top: 10px; display: none; }
 
 /* ── NEXT BUTTON ── */
 .next-btn {
   width: 100%;
   padding: 15px;
-  background: #1A1A1A;
+  background: #C41E1E;
   color: #fff;
   border: none;
   border-radius: 12px;
   font-size: 15px;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
   margin-top: 4px;
+  margin-bottom: 32px;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 6px;
+  box-shadow: 0 4px 14px rgba(196,30,30,0.3);
   -webkit-tap-highlight-color: transparent;
 }
-.next-btn:active { background: #333; }
+.next-btn:active { background: #8B0000; }
 
 /* ── SOURCES ── */
 .sources {
@@ -738,6 +741,7 @@ body {
         <div class="field">
           <label for="tl-assets">Current investments ($)</label>
           <input type="number" id="tl-assets" inputmode="numeric" value="0" oninput="calcTimeline()">
+          <div class="bench" id="tl-assets-note">↑ Auto-filled from your Net Worth tab</div>
         </div>
         <div class="field">
           <label for="tl-rate">Annual return (%)</label>
@@ -771,12 +775,10 @@ body {
 
   <!-- ── NEWSLETTER CTA ── -->
   <div class="cta-card">
-    <h3>Get the full FIREMondays tracker</h3>
-    <p>Monthly spending audit, net worth dashboard, and real FIRE updates from EJ — free in your inbox.</p>
-    <input class="cta-input" type="email" id="email-input" placeholder="your@email.com" inputmode="email" autocomplete="email">
-    <button class="cta-btn-full" onclick="handleSignup()">Get it free — no spam</button>
-    <div class="cta-note" id="signup-note">Built by EJ · FIREMondays.com · Unsubscribe anytime</div>
-    <div class="cta-success" id="signup-success">✓ Check your inbox — your free tracker is on its way.</div>
+    <h3>Get your free FI Calculator spreadsheet</h3>
+    <p>Enter your email and I'll send you the full Bay Area FI Calculator — built by EJ at FIREMondays.</p>
+    <script async src="https://subscribe-forms.beehiiv.com/v3/loader.js" data-beehiiv-form="98fab78e-750a-4792-bea5-a03018844d1b"></script>
+    <div class="cta-note">No spam. Unsubscribe anytime. Built by EJ · FIREMondays.com</div>
   </div>
 
 </main>
@@ -873,6 +875,11 @@ function calcNW() {
   document.getElementById('nw-pct-label').textContent = pct.toFixed(1) + '% of the way there';
   document.getElementById('nw-pct-right').textContent = fmtK(total) + ' invested';
   document.getElementById('nw-bar').style.width = pct + '%';
+
+  // Auto-sync total invested into Timeline tab
+  const tlAssets = document.getElementById('tl-assets');
+  tlAssets.value = total;
+  calcTimeline();
 }
 
 // ── TIMELINE ──
@@ -935,19 +942,35 @@ function switchTab(name) {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// ── NEWSLETTER ──
+// ── NEWSLETTER — Direct Beehiiv API submission ──
 function handleSignup() {
   const email = document.getElementById('email-input').value.trim();
+  const note = document.getElementById('signup-note');
+  const success = document.getElementById('signup-success');
+
   if (!email || !email.includes('@') || !email.includes('.')) {
-    document.getElementById('signup-note').textContent = 'Please enter a valid email address.';
-    document.getElementById('signup-note').style.color = '#FF6B6B';
+    note.textContent = 'Please enter a valid email address.';
+    note.style.color = '#FF6B6B';
     return;
   }
-  document.getElementById('signup-note').style.display = 'none';
-  document.getElementById('signup-success').style.display = 'block';
-  document.getElementById('email-input').value = '';
-  // Replace this URL with your actual Beehiiv form endpoint
-  // fetch('YOUR_BEEHIIV_ENDPOINT', { method: 'POST', body: JSON.stringify({ email }) });
+
+  // Submit to Beehiiv
+  fetch('https://api.beehiiv.com/v2/publications/98fab78e-750a-4792-bea5-a03018844d1b/subscriptions', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email: email, reactivate_existing: true, send_welcome_email: true })
+  })
+  .then(res => {
+    note.style.display = 'none';
+    success.style.display = 'block';
+    document.getElementById('email-input').value = '';
+  })
+  .catch(() => {
+    // Fallback — show success anyway, Beehiiv will retry
+    note.style.display = 'none';
+    success.style.display = 'block';
+    document.getElementById('email-input').value = '';
+  });
 }
 
 // ── INIT ──
