@@ -347,13 +347,13 @@ body {
   border-radius: 10px;
   background: #2A2A2A;
   color: #fff;
-  margin-bottom: 10px;
+  margin-bottom: 0;
+  min-width: 0;
 }
 .cta-input::placeholder { color: #666; }
 .cta-input:focus { outline: none; border-color: #C41E1E; }
 .cta-btn-full {
-  width: 100%;
-  padding: 14px;
+  padding: 14px 20px;
   background: #C41E1E;
   color: #fff;
   border: none;
@@ -363,7 +363,8 @@ body {
   cursor: pointer;
   transition: background 0.15s;
   -webkit-tap-highlight-color: transparent;
-  margin-bottom: 4px;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 .cta-btn-full:active { background: #8B0000; }
 .cta-success { color: #22863A; font-size: 13px; font-weight: 600; margin-top: 10px; display: none; }
@@ -776,9 +777,25 @@ body {
   <!-- ── NEWSLETTER CTA ── -->
   <div class="cta-card">
     <h3>Get your free FI Calculator spreadsheet</h3>
-    <p>Enter your email and I'll send you the full Bay Area FI Calculator — built by EJ at FIREMondays.</p>
-    <script async src="https://subscribe-forms.beehiiv.com/v3/loader.js" data-beehiiv-form="98fab78e-750a-4792-bea5-a03018844d1b"></script>
-    <div class="cta-note">No spam. Unsubscribe anytime. Built by EJ · FIREMondays.com</div>
+    <p>Enter your email and I'll send you the Bay Area FI Calculator — free from EJ at FIREMondays.</p>
+    <form action="https://app.beehiiv.com/subscribe/98fab78e-750a-4792-bea5-a03018844d1b" method="GET" target="_blank" style="width:100%;margin-top:4px">
+      <div style="display:flex;gap:8px;width:100%">
+        <input
+          class="cta-input"
+          type="email"
+          name="email"
+          placeholder="your@email.com"
+          inputmode="email"
+          autocomplete="email"
+          required
+          style="flex:1;margin-bottom:0"
+        >
+        <button class="cta-btn-full" type="submit" style="width:auto;padding:14px 20px;margin-bottom:0;white-space:nowrap">
+          Get it free
+        </button>
+      </div>
+    </form>
+    <div class="cta-note" style="margin-top:10px">No spam. Unsubscribe anytime. Built by EJ · FIREMondays.com</div>
   </div>
 
 </main>
