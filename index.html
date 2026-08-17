@@ -1,0 +1,957 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="description" content="Calculate your Financial Independence number in minutes. Free FI calculator built for Bay Area families by FIREMondays.">
+<title>FI Calculator — FIREMondays</title>
+<style>
+/* ── RESET & BASE ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; -webkit-text-size-adjust: 100%; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  background: #F7F5F2;
+  color: #1A1A1A;
+  min-height: 100vh;
+  padding-bottom: 40px;
+}
+
+/* ── HEADER ── */
+.site-header {
+  background: #C41E1E;
+  padding: 0;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 12px rgba(196,30,30,0.3);
+}
+.header-inner {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.logo {
+  font-size: 20px;
+  font-weight: 800;
+  font-style: italic;
+  color: #fff;
+  letter-spacing: -0.5px;
+  text-decoration: none;
+}
+.logo span { color: rgba(255,255,255,0.6); font-weight: 400; font-style: normal; font-size: 13px; letter-spacing: 0; margin-left: 4px; }
+
+/* ── HERO ── */
+.hero {
+  background: #C41E1E;
+  padding: 28px 20px 36px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.hero::after {
+  content: '';
+  position: absolute;
+  bottom: -1px; left: 0; right: 0;
+  height: 24px;
+  background: #F7F5F2;
+  clip-path: ellipse(55% 100% at 50% 100%);
+}
+.hero h1 {
+  font-size: clamp(24px, 6vw, 36px);
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: -0.5px;
+  line-height: 1.15;
+  margin-bottom: 8px;
+}
+.hero p {
+  font-size: 14px;
+  color: rgba(255,255,255,0.8);
+  max-width: 400px;
+  margin: 0 auto;
+  line-height: 1.5;
+}
+
+/* ── MAIN CONTAINER ── */
+.container {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 24px 16px 0;
+}
+
+/* ── TABS ── */
+.tabs {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+  margin-bottom: 20px;
+  position: sticky;
+  top: 53px;
+  z-index: 90;
+  background: #F7F5F2;
+  padding: 10px 0 6px;
+}
+.tab-btn {
+  background: #fff;
+  border: 1.5px solid #E0DDD8;
+  border-radius: 10px;
+  padding: 10px 4px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #888;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.15s;
+  line-height: 1.3;
+  -webkit-tap-highlight-color: transparent;
+}
+.tab-btn.active {
+  background: #C41E1E;
+  border-color: #C41E1E;
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(196,30,30,0.25);
+}
+.tab-btn .tab-num {
+  display: block;
+  font-size: 10px;
+  opacity: 0.7;
+  margin-bottom: 1px;
+}
+
+/* ── PANELS ── */
+.panel { display: none; }
+.panel.active { display: block; }
+
+/* ── CARDS ── */
+.card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 20px 16px;
+  margin-bottom: 12px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  border: 1px solid #EDEAE5;
+}
+
+/* ── SECTION LABELS ── */
+.section-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: #C41E1E;
+  margin: 0 0 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.section-label .src {
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0;
+  text-transform: none;
+  color: #AAA;
+  background: #F5F5F5;
+  border-radius: 4px;
+  padding: 1px 5px;
+}
+
+/* ── FIELDS ── */
+.field {
+  margin-bottom: 14px;
+}
+.field:last-child { margin-bottom: 0; }
+.field label {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+  color: #444;
+  margin-bottom: 5px;
+}
+.field input {
+  width: 100%;
+  padding: 13px 14px;
+  font-size: 16px; /* prevents iOS zoom on focus */
+  font-weight: 600;
+  color: #1A1A1A;
+  background: #FAFAF9;
+  border: 1.5px solid #E0DDD8;
+  border-radius: 10px;
+  appearance: none;
+  -webkit-appearance: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.field input:focus {
+  outline: none;
+  border-color: #C41E1E;
+  box-shadow: 0 0 0 3px rgba(196,30,30,0.12);
+  background: #fff;
+}
+.bench {
+  font-size: 11px;
+  color: #22863A;
+  margin-top: 4px;
+  font-weight: 500;
+}
+
+/* ── TWO COLUMN ON TABLET+ ── */
+.row-2 {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0;
+}
+@media (min-width: 480px) {
+  .row-2 {
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+}
+
+/* ── RUNNING TOTAL BAR ── */
+.total-bar {
+  background: #C41E1E;
+  border-radius: 14px;
+  padding: 16px 20px;
+  margin-bottom: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 4px 16px rgba(196,30,30,0.25);
+}
+.total-bar .tl { color: rgba(255,255,255,0.8); font-size: 13px; font-weight: 500; }
+.total-bar .tv { color: #fff; font-size: 22px; font-weight: 800; letter-spacing: -0.5px; }
+.total-bar .tv small { font-size: 12px; font-weight: 500; display: block; color: rgba(255,255,255,0.7); margin-top: 1px; }
+
+/* ── FI RESULT ── */
+.fi-hero {
+  background: linear-gradient(135deg, #C41E1E 0%, #8B0000 100%);
+  border-radius: 16px;
+  padding: 24px 20px;
+  text-align: center;
+  margin-bottom: 12px;
+  box-shadow: 0 4px 20px rgba(196,30,30,0.3);
+}
+.fi-hero .fi-label { color: rgba(255,255,255,0.75); font-size: 12px; font-weight: 600; letter-spacing: 0.5px; margin-bottom: 6px; text-transform: uppercase; }
+.fi-hero .fi-number { color: #fff; font-size: clamp(32px, 8vw, 48px); font-weight: 800; letter-spacing: -1px; line-height: 1; }
+.fi-hero .fi-formula { color: rgba(255,255,255,0.6); font-size: 12px; margin-top: 8px; }
+
+.stat-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.stat-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 14px;
+  border: 1px solid #EDEAE5;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+.stat-card .slabel { font-size: 11px; color: #999; margin-bottom: 4px; font-weight: 500; }
+.stat-card .sval { font-size: 18px; font-weight: 700; color: #1A1A1A; letter-spacing: -0.3px; }
+
+/* ── BREAKDOWN LIST ── */
+.breakdown-list { list-style: none; }
+.breakdown-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid #F0EDE8;
+  font-size: 13px;
+}
+.breakdown-item:last-child { border-bottom: none; }
+.breakdown-item .bname { color: #666; }
+.breakdown-item .bval { font-weight: 600; color: #1A1A1A; }
+.breakdown-total {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 0 0;
+  font-size: 15px;
+  font-weight: 700;
+  color: #C41E1E;
+  margin-top: 4px;
+}
+
+/* ── NET WORTH ── */
+.progress-section { margin-bottom: 12px; }
+.progress-label-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: #888;
+  margin-bottom: 7px;
+  font-weight: 500;
+}
+.progress-track {
+  height: 10px;
+  background: #F0EDE8;
+  border-radius: 5px;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #C41E1E, #FF4444);
+  border-radius: 5px;
+  transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ── TIMELINE ── */
+.timeline-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 0;
+  border-bottom: 1px solid #F0EDE8;
+  font-size: 12px;
+}
+.timeline-row:last-child { border-bottom: none; }
+.tl-yr { color: #AAA; width: 38px; flex-shrink: 0; font-weight: 500; }
+.tl-bar-wrap { flex: 1; height: 6px; background: #F0EDE8; border-radius: 3px; overflow: hidden; }
+.tl-bar { height: 100%; background: #C41E1E; border-radius: 3px; transition: width 0.3s; }
+.tl-val { font-weight: 600; color: #1A1A1A; min-width: 68px; text-align: right; font-size: 11px; }
+.tl-fi { font-size: 11px; color: #C41E1E; font-weight: 700; min-width: 24px; text-align: right; }
+
+/* ── EXPLANATION BOX ── */
+.explain-box {
+  background: #FDF8F8;
+  border: 1px solid #F0DDDD;
+  border-left: 3px solid #C41E1E;
+  border-radius: 10px;
+  padding: 14px 16px;
+  font-size: 13px;
+  color: #555;
+  line-height: 1.6;
+}
+
+/* ── CTA / NEWSLETTER ── */
+.cta-card {
+  background: #1A1A1A;
+  border-radius: 16px;
+  padding: 24px 20px;
+  margin-bottom: 12px;
+  text-align: center;
+}
+.cta-card h3 { color: #fff; font-size: 18px; font-weight: 700; margin-bottom: 6px; letter-spacing: -0.3px; }
+.cta-card p { color: #888; font-size: 13px; margin-bottom: 16px; line-height: 1.5; }
+.cta-input {
+  width: 100%;
+  padding: 14px 16px;
+  font-size: 16px;
+  border: 1.5px solid #333;
+  border-radius: 10px;
+  background: #2A2A2A;
+  color: #fff;
+  margin-bottom: 10px;
+}
+.cta-input::placeholder { color: #666; }
+.cta-input:focus { outline: none; border-color: #C41E1E; }
+.cta-btn-full {
+  width: 100%;
+  padding: 14px;
+  background: #C41E1E;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s;
+  -webkit-tap-highlight-color: transparent;
+}
+.cta-btn-full:active { background: #8B0000; }
+.cta-note { font-size: 11px; color: #666; margin-top: 10px; }
+.cta-success { color: #22863A; font-size: 13px; font-weight: 600; margin-top: 10px; display: none; }
+
+/* ── NEXT BUTTON ── */
+.next-btn {
+  width: 100%;
+  padding: 15px;
+  background: #1A1A1A;
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  -webkit-tap-highlight-color: transparent;
+}
+.next-btn:active { background: #333; }
+
+/* ── SOURCES ── */
+.sources {
+  font-size: 11px;
+  color: #AAA;
+  line-height: 1.6;
+  padding: 12px 16px;
+  background: #F0EDE8;
+  border-radius: 10px;
+  margin-top: 4px;
+}
+
+/* ── FOOTER ── */
+.site-footer {
+  max-width: 680px;
+  margin: 24px auto 0;
+  padding: 0 16px;
+  text-align: center;
+  font-size: 11px;
+  color: #AAA;
+  line-height: 1.7;
+}
+.site-footer a { color: #C41E1E; text-decoration: none; }
+
+/* ── REDUCED MOTION ── */
+@media (prefers-reduced-motion: reduce) {
+  .progress-fill, .tl-bar { transition: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="site-header">
+  <div class="header-inner">
+    <a href="/" class="logo">FIRE<em style="color:#fff;opacity:0.85">Mondays</em><span>by EJ</span></a>
+  </div>
+</header>
+
+<!-- HERO -->
+<div class="hero">
+  <h1>What's your<br>FI Number?</h1>
+  <p>Find the exact amount you need invested to never have to work again — in under 5 minutes.</p>
+</div>
+
+<!-- MAIN -->
+<main class="container" role="main">
+
+  <!-- TABS -->
+  <nav class="tabs" role="tablist" aria-label="Calculator sections">
+    <button class="tab-btn active" onclick="switchTab('spending')" role="tab" aria-selected="true" aria-controls="panel-spending">
+      <span class="tab-num">01</span>Spending
+    </button>
+    <button class="tab-btn" onclick="switchTab('fi')" role="tab" aria-selected="false" aria-controls="panel-fi">
+      <span class="tab-num">02</span>FI Number
+    </button>
+    <button class="tab-btn" onclick="switchTab('networth')" role="tab" aria-selected="false" aria-controls="panel-networth">
+      <span class="tab-num">03</span>Net Worth
+    </button>
+    <button class="tab-btn" onclick="switchTab('timeline')" role="tab" aria-selected="false" aria-controls="panel-timeline">
+      <span class="tab-num">04</span>Timeline
+    </button>
+  </nav>
+
+  <!-- ── PANEL 1: SPENDING ── -->
+  <section id="panel-spending" class="panel active" role="tabpanel" aria-labelledby="tab-spending">
+
+    <div id="total-bar" class="total-bar">
+      <div>
+        <div class="tl">Monthly spending</div>
+        <div class="tv" id="bar-monthly">$0<small id="bar-annual">$0 / year</small></div>
+      </div>
+      <div style="text-align:right">
+        <div class="tl">FI number</div>
+        <div class="tv" id="bar-fi" style="font-size:17px">—</div>
+      </div>
+    </div>
+
+    <!-- Housing -->
+    <div class="card">
+      <div class="section-label">Housing <span class="src">CA Realtors 2026</span></div>
+      <div class="field">
+        <label for="s_mortgage">Mortgage / Rent</label>
+        <input type="number" id="s_mortgage" inputmode="numeric" value="6100" oninput="calc()">
+        <div class="bench">↑ Bay Area median: $6,100 (based on $1.3M median home)</div>
+      </div>
+      <div class="field">
+        <label for="s_tax">Property Tax + HOA</label>
+        <input type="number" id="s_tax" inputmode="numeric" value="1400" oninput="calc()">
+        <div class="bench">↑ Bay Area median: $1,400/mo</div>
+      </div>
+      <div class="row-2">
+        <div class="field">
+          <label for="s_home">Insurance + Maintenance</label>
+          <input type="number" id="s_home" inputmode="numeric" value="600" oninput="calc()">
+          <div class="bench">↑ $600/mo avg</div>
+        </div>
+        <div class="field">
+          <label for="s_util">Utilities + Internet</label>
+          <input type="number" id="s_util" inputmode="numeric" value="450" oninput="calc()">
+          <div class="bench">↑ 40% above national avg</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Childcare -->
+    <div class="card">
+      <div class="section-label">Childcare & Education <span class="src">CA Child Care Network 2026</span></div>
+      <div class="field">
+        <label for="s_child">Childcare / Daycare (2 kids)</label>
+        <input type="number" id="s_child" inputmode="numeric" value="4500" oninput="calc()">
+        <div class="bench">↑ Bay Area median: $4,000–$6,000/mo for 2 children</div>
+      </div>
+      <div class="row-2">
+        <div class="field">
+          <label for="s_school">School + Activities</label>
+          <input type="number" id="s_school" inputmode="numeric" value="900" oninput="calc()">
+          <div class="bench">↑ $900/mo avg</div>
+        </div>
+        <div class="field">
+          <label for="s_529">529 College Savings</label>
+          <input type="number" id="s_529" inputmode="numeric" value="500" oninput="calc()">
+          <div class="bench">↑ Recommended $500/mo</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Transportation -->
+    <div class="card">
+      <div class="section-label">Transportation <span class="src">MIT Living Wage Feb 2026</span></div>
+      <div class="row-2">
+        <div class="field">
+          <label for="s_car">Car Payment(s)</label>
+          <input type="number" id="s_car" inputmode="numeric" value="900" oninput="calc()">
+          <div class="bench">↑ 2-car family: $900</div>
+        </div>
+        <div class="field">
+          <label for="s_gas">Gas + Insurance + Tolls</label>
+          <input type="number" id="s_gas" inputmode="numeric" value="735" oninput="calc()">
+          <div class="bench">↑ MIT: $14,900/yr family of 4</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Food -->
+    <div class="card">
+      <div class="section-label">Food & Dining <span class="src">Silicon Valley Cost Study 2026</span></div>
+      <div class="field">
+        <label for="s_grocery">Groceries</label>
+        <input type="number" id="s_grocery" inputmode="numeric" value="1400" oninput="calc()">
+        <div class="bench">↑ Family of 4: $1,200–$1,600/mo (20–30% above national)</div>
+      </div>
+      <div class="row-2">
+        <div class="field">
+          <label for="s_dining">Dining + Delivery</label>
+          <input type="number" id="s_dining" inputmode="numeric" value="1100" oninput="calc()">
+          <div class="bench">↑ $1,000–$1,400/mo</div>
+        </div>
+        <div class="field">
+          <label for="s_coffee">Coffee + Work Lunches</label>
+          <input type="number" id="s_coffee" inputmode="numeric" value="350" oninput="calc()">
+          <div class="bench">↑ Bay Area avg</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Healthcare -->
+    <div class="card">
+      <div class="section-label">Healthcare <span class="src">Kaiser Family Foundation 2025</span></div>
+      <div class="field">
+        <label for="s_health">Health Insurance Premiums</label>
+        <input type="number" id="s_health" inputmode="numeric" value="900" oninput="calc()">
+        <div class="bench">↑ KFF 2025: family coverage employee share $7,300+/yr</div>
+      </div>
+      <div class="row-2">
+        <div class="field">
+          <label for="s_oop">Out-of-Pocket + Dental</label>
+          <input type="number" id="s_oop" inputmode="numeric" value="450" oninput="calc()">
+          <div class="bench">↑ Bay Area avg</div>
+        </div>
+        <div class="field">
+          <label for="s_therapy">Therapy + Mental Health</label>
+          <input type="number" id="s_therapy" inputmode="numeric" value="350" oninput="calc()">
+          <div class="bench">↑ $150–200/session weekly</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Subscriptions -->
+    <div class="card">
+      <div class="section-label">Subscriptions & Personal</div>
+      <div class="row-2">
+        <div class="field">
+          <label for="s_subs">All Subscriptions</label>
+          <input type="number" id="s_subs" inputmode="numeric" value="525" oninput="calc()">
+          <div class="bench">↑ Streaming + gym + apps</div>
+        </div>
+        <div class="field">
+          <label for="s_personal">Personal + Clothing</label>
+          <input type="number" id="s_personal" inputmode="numeric" value="850" oninput="calc()">
+          <div class="bench">↑ Bay Area avg</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Entertainment -->
+    <div class="card">
+      <div class="section-label">Entertainment & Travel <span class="src">C2ER 2026</span></div>
+      <div class="row-2">
+        <div class="field">
+          <label for="s_travel">Travel (monthly avg)</label>
+          <input type="number" id="s_travel" inputmode="numeric" value="700" oninput="calc()">
+          <div class="bench">↑ Bay Area family avg</div>
+        </div>
+        <div class="field">
+          <label for="s_entertain">Entertainment + Hobbies</label>
+          <input type="number" id="s_entertain" inputmode="numeric" value="550" oninput="calc()">
+          <div class="bench">↑ Bay Area avg</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Insurance & Other -->
+    <div class="card">
+      <div class="section-label">Insurance & Other</div>
+      <div class="row-2">
+        <div class="field">
+          <label for="s_ins">Life + Disability Insurance</label>
+          <input type="number" id="s_ins" inputmode="numeric" value="350" oninput="calc()">
+          <div class="bench">↑ High earner family avg</div>
+        </div>
+        <div class="field">
+          <label for="s_misc">Miscellaneous Buffer</label>
+          <input type="number" id="s_misc" inputmode="numeric" value="700" oninput="calc()">
+          <div class="bench">↑ Bay Area always surprises</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sources">
+      Benchmarks verified against 2026 Bay Area data: CA Association of Realtors · MIT Living Wage Calculator Feb 2026 · CA Child Care Resource & Referral Network May 2025 · Kaiser Family Foundation 2025 · Silicon Valley Cost of Living Study July 2026 · C2ER Cost of Living Index 2026. All figures reflect median costs for a family of 4 in San Jose / Bay Area.
+    </div>
+
+    <button class="next-btn" onclick="switchTab('fi')">See my FI number →</button>
+  </section>
+
+  <!-- ── PANEL 2: FI NUMBER ── -->
+  <section id="panel-fi" class="panel" role="tabpanel" aria-labelledby="tab-fi">
+
+    <div class="fi-hero">
+      <div class="fi-label">Your FI Number</div>
+      <div class="fi-number" id="fi-number">—</div>
+      <div class="fi-formula" id="fi-formula">Complete spending audit to calculate</div>
+    </div>
+
+    <div class="stat-grid">
+      <div class="stat-card">
+        <div class="slabel">Monthly spending</div>
+        <div class="sval" id="fi-monthly">—</div>
+      </div>
+      <div class="stat-card">
+        <div class="slabel">Annual spending</div>
+        <div class="sval" id="fi-annual">—</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="section-label">Spending breakdown</div>
+      <ul class="breakdown-list" id="fi-breakdown"></ul>
+    </div>
+
+    <div class="card">
+      <div class="section-label">How the 4% rule works</div>
+      <div class="explain-box">
+        In 1994, financial researcher William Bengen studied decades of market data and found that withdrawing no more than 4% of your investment portfolio per year means your money lasts at least 30 years — through recessions and market crashes. Your FI number = annual spending ÷ 4% = annual spending × 25. Cross that line and work becomes optional.
+      </div>
+    </div>
+
+    <button class="next-btn" onclick="switchTab('networth')">Track my net worth →</button>
+  </section>
+
+  <!-- ── PANEL 3: NET WORTH ── -->
+  <section id="panel-networth" class="panel" role="tabpanel" aria-labelledby="tab-networth">
+
+    <div class="card">
+      <div class="section-label">Investment accounts — count toward FI</div>
+      <div class="field"><label for="nw_401k">401K / 403b</label><input type="number" id="nw_401k" inputmode="numeric" value="0" oninput="calcNW()"></div>
+      <div class="row-2">
+        <div class="field"><label for="nw_ira">Traditional IRA</label><input type="number" id="nw_ira" inputmode="numeric" value="0" oninput="calcNW()"></div>
+        <div class="field"><label for="nw_roth">Roth IRA / Roth 401K</label><input type="number" id="nw_roth" inputmode="numeric" value="0" oninput="calcNW()"></div>
+      </div>
+      <div class="row-2">
+        <div class="field"><label for="nw_brok">Taxable Brokerage</label><input type="number" id="nw_brok" inputmode="numeric" value="0" oninput="calcNW()"></div>
+        <div class="field"><label for="nw_hsa">HSA (invested portion)</label><input type="number" id="nw_hsa" inputmode="numeric" value="0" oninput="calcNW()"></div>
+      </div>
+      <div class="field"><label for="nw_other">Other investments</label><input type="number" id="nw_other" inputmode="numeric" value="0" oninput="calcNW()"></div>
+    </div>
+
+    <div class="fi-hero" style="padding:18px 20px">
+      <div class="fi-label">Your FI Number</div>
+      <div class="fi-number" id="nw-fi-number" style="font-size:28px">—</div>
+    </div>
+
+    <div class="stat-grid">
+      <div class="stat-card">
+        <div class="slabel">Total invested</div>
+        <div class="sval" id="nw-total">$0</div>
+      </div>
+      <div class="stat-card">
+        <div class="slabel">Gap to FI</div>
+        <div class="sval" id="nw-gap">—</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="section-label">Progress to FI</div>
+      <div class="progress-section">
+        <div class="progress-label-row">
+          <span id="nw-pct-label">0% there</span>
+          <span id="nw-pct-right" style="color:#C41E1E;font-weight:600">$0 invested</span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" id="nw-bar" style="width:0%"></div>
+        </div>
+      </div>
+      <div class="explain-box" style="margin-top:12px">
+        Only investment accounts count toward your FI number — not your home equity, not your emergency fund. Your primary residence is not a retirement income source unless you plan to sell it.
+      </div>
+    </div>
+
+    <button class="next-btn" onclick="switchTab('timeline')">Project my FI timeline →</button>
+  </section>
+
+  <!-- ── PANEL 4: TIMELINE ── -->
+  <section id="panel-timeline" class="panel" role="tabpanel" aria-labelledby="tab-timeline">
+
+    <div class="card">
+      <div class="section-label">Your inputs</div>
+      <div class="row-2">
+        <div class="field">
+          <label for="tl-age">Current age</label>
+          <input type="number" id="tl-age" inputmode="numeric" value="44" oninput="calcTimeline()">
+        </div>
+        <div class="field">
+          <label for="tl-save">Monthly savings ($)</label>
+          <input type="number" id="tl-save" inputmode="numeric" value="5000" oninput="calcTimeline()">
+        </div>
+      </div>
+      <div class="row-2">
+        <div class="field">
+          <label for="tl-assets">Current investments ($)</label>
+          <input type="number" id="tl-assets" inputmode="numeric" value="0" oninput="calcTimeline()">
+        </div>
+        <div class="field">
+          <label for="tl-rate">Annual return (%)</label>
+          <input type="number" id="tl-rate" inputmode="numeric" value="8" oninput="calcTimeline()">
+          <div class="bench">↑ Pre-set at 8% — FIREMondays default</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="stat-grid">
+      <div class="stat-card" style="grid-column:1/-1;background:#C41E1E;border-color:#C41E1E">
+        <div class="slabel" style="color:rgba(255,255,255,0.7)">Projected FI year</div>
+        <div class="sval" id="tl-year" style="color:#fff;font-size:32px">—</div>
+      </div>
+      <div class="stat-card">
+        <div class="slabel">Years to FI</div>
+        <div class="sval" id="tl-years">—</div>
+      </div>
+      <div class="stat-card">
+        <div class="slabel">Age at FI</div>
+        <div class="sval" id="tl-age-fi">—</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="section-label">Year-by-year projection</div>
+      <div id="timeline-rows"></div>
+    </div>
+
+  </section>
+
+  <!-- ── NEWSLETTER CTA ── -->
+  <div class="cta-card">
+    <h3>Get the full FIREMondays tracker</h3>
+    <p>Monthly spending audit, net worth dashboard, and real FIRE updates from EJ — free in your inbox.</p>
+    <input class="cta-input" type="email" id="email-input" placeholder="your@email.com" inputmode="email" autocomplete="email">
+    <button class="cta-btn-full" onclick="handleSignup()">Get it free — no spam</button>
+    <div class="cta-note" id="signup-note">Built by EJ · FIREMondays.com · Unsubscribe anytime</div>
+    <div class="cta-success" id="signup-success">✓ Check your inbox — your free tracker is on its way.</div>
+  </div>
+
+</main>
+
+<!-- FOOTER -->
+<footer class="site-footer">
+  <p>Built by EJ · <a href="https://firemondays.com">FIREMondays.com</a></p>
+  <p style="margin-top:6px">This calculator is for educational purposes only and does not constitute financial advice. Consult a licensed financial advisor for personalized guidance.</p>
+</footer>
+
+<script>
+// ── HELPERS ──
+function fmt(n) {
+  if (isNaN(n) || n === null) return '—';
+  return '$' + Math.round(n).toLocaleString('en-US');
+}
+function fmtK(n) {
+  if (isNaN(n) || n === null) return '—';
+  if (n >= 1000000) return '$' + (n / 1000000).toFixed(2) + 'M';
+  if (n >= 1000) return '$' + (n / 1000).toFixed(0) + 'K';
+  return fmt(n);
+}
+function getVal(id) {
+  return parseFloat(document.getElementById(id).value) || 0;
+}
+
+// ── SPENDING IDS ──
+const spendIds = [
+  's_mortgage','s_tax','s_home','s_util',
+  's_child','s_school','s_529',
+  's_car','s_gas',
+  's_grocery','s_dining','s_coffee',
+  's_health','s_oop','s_therapy',
+  's_subs','s_personal',
+  's_travel','s_entertain',
+  's_ins','s_misc'
+];
+
+const spendCats = [
+  ['Housing', ['s_mortgage','s_tax','s_home','s_util']],
+  ['Childcare & Education', ['s_child','s_school','s_529']],
+  ['Transportation', ['s_car','s_gas']],
+  ['Food & Dining', ['s_grocery','s_dining','s_coffee']],
+  ['Healthcare', ['s_health','s_oop','s_therapy']],
+  ['Subscriptions & Personal', ['s_subs','s_personal']],
+  ['Entertainment & Travel', ['s_travel','s_entertain']],
+  ['Insurance & Other', ['s_ins','s_misc']],
+];
+
+function getTotalSpend() {
+  return spendIds.reduce((sum, id) => sum + getVal(id), 0);
+}
+
+// ── MAIN CALC ──
+function calc() {
+  const monthly = getTotalSpend();
+  const annual = monthly * 12;
+  const fi = annual * 25;
+
+  // Update running total bar
+  document.getElementById('bar-monthly').innerHTML = fmt(monthly) + '<small id="bar-annual">' + fmt(annual) + ' / year</small>';
+  document.getElementById('bar-fi').textContent = fi > 0 ? fmtK(fi) : '—';
+
+  // Update FI panel
+  document.getElementById('fi-number').textContent = fi > 0 ? fmtK(fi) : '—';
+  document.getElementById('fi-monthly').textContent = fmt(monthly);
+  document.getElementById('fi-annual').textContent = fmt(annual);
+  document.getElementById('fi-formula').textContent = fi > 0 ? fmt(annual) + ' × 25 = ' + fmtK(fi) : 'Complete spending audit to calculate';
+
+  // Breakdown
+  const breakdown = spendCats.map(([name, ids]) => {
+    const tot = ids.reduce((s, id) => s + getVal(id), 0);
+    return `<li class="breakdown-item"><span class="bname">${name}</span><span class="bval">${fmt(tot)}/mo</span></li>`;
+  }).join('');
+  const totLine = `<li class="breakdown-total"><span>Total monthly</span><span>${fmt(monthly)}</span></li>`;
+  document.getElementById('fi-breakdown').innerHTML = breakdown + totLine;
+
+  calcNW();
+  calcTimeline();
+}
+
+// ── NET WORTH ──
+function calcNW() {
+  const monthly = getTotalSpend();
+  const fi = monthly * 12 * 25;
+  const nwIds = ['nw_401k','nw_ira','nw_roth','nw_brok','nw_hsa','nw_other'];
+  const total = nwIds.reduce((s, id) => s + getVal(id), 0);
+  const gap = Math.max(0, fi - total);
+  const pct = fi > 0 ? Math.min(100, total / fi * 100) : 0;
+
+  document.getElementById('nw-fi-number').textContent = fi > 0 ? fmtK(fi) : '—';
+  document.getElementById('nw-total').textContent = fmtK(total);
+  document.getElementById('nw-gap').textContent = fi > 0 ? fmtK(gap) : '—';
+  document.getElementById('nw-pct-label').textContent = pct.toFixed(1) + '% of the way there';
+  document.getElementById('nw-pct-right').textContent = fmtK(total) + ' invested';
+  document.getElementById('nw-bar').style.width = pct + '%';
+}
+
+// ── TIMELINE ──
+function calcTimeline() {
+  const monthly = getTotalSpend();
+  const fi = monthly * 12 * 25;
+  const age = getVal('tl-age') || 44;
+  const save = getVal('tl-save');
+  const assets = getVal('tl-assets');
+  const rate = (getVal('tl-rate') || 8) / 100;
+  const mRate = rate / 12;
+
+  let port = assets;
+  let months = 0;
+  const maxMonths = 600;
+  while (port < fi && months < maxMonths) {
+    port = port * (1 + mRate) + save;
+    months++;
+  }
+
+  const years = Math.round(months / 12 * 10) / 10;
+  const fiYear = new Date().getFullYear() + Math.ceil(years);
+  const fiAge = Math.round((age + years) * 10) / 10;
+  const hit = months < maxMonths;
+
+  document.getElementById('tl-year').textContent = hit ? fiYear : '50+ yrs';
+  document.getElementById('tl-years').textContent = hit ? years + ' yrs' : '—';
+  document.getElementById('tl-age-fi').textContent = hit ? fiAge : '—';
+
+  const rows = [];
+  let p = assets;
+  const maxRows = Math.min(30, hit ? Math.ceil(years) + 2 : 30);
+  for (let i = 0; i < maxRows; i++) {
+    const yr = new Date().getFullYear() + i;
+    const startP = p;
+    p = p + p * rate + save * 12;
+    const pct = fi > 0 ? Math.min(100, p / fi * 100) : 0;
+    const hitFI = p >= fi && startP < fi;
+    rows.push(`<div class="timeline-row">
+      <span class="tl-yr">${yr}</span>
+      <div class="tl-bar-wrap"><div class="tl-bar" style="width:${pct.toFixed(1)}%"></div></div>
+      <span class="tl-val">${fmtK(p)}</span>
+      <span class="tl-fi">${hitFI ? '🎯' : ''}</span>
+    </div>`);
+    if (p >= fi && i > 1) break;
+  }
+  document.getElementById('timeline-rows').innerHTML = rows.join('');
+}
+
+// ── TAB SWITCHING ──
+function switchTab(name) {
+  const names = ['spending', 'fi', 'networth', 'timeline'];
+  document.querySelectorAll('.tab-btn').forEach((btn, i) => {
+    const active = names[i] === name;
+    btn.classList.toggle('active', active);
+    btn.setAttribute('aria-selected', active);
+  });
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('panel-' + name).classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ── NEWSLETTER ──
+function handleSignup() {
+  const email = document.getElementById('email-input').value.trim();
+  if (!email || !email.includes('@') || !email.includes('.')) {
+    document.getElementById('signup-note').textContent = 'Please enter a valid email address.';
+    document.getElementById('signup-note').style.color = '#FF6B6B';
+    return;
+  }
+  document.getElementById('signup-note').style.display = 'none';
+  document.getElementById('signup-success').style.display = 'block';
+  document.getElementById('email-input').value = '';
+  // Replace this URL with your actual Beehiiv form endpoint
+  // fetch('YOUR_BEEHIIV_ENDPOINT', { method: 'POST', body: JSON.stringify({ email }) });
+}
+
+// ── INIT ──
+calc();
+</script>
+</body>
+</html>
