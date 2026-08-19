@@ -5,6 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <meta name="description" content="Calculate your Financial Independence number in minutes. Free FI calculator built for Bay Area families by FIREMondays.">
 <title>FI Calculator — FIREMondays</title>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-CPYPZYPX4S"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-CPYPZYPX4S');
+</script>
 <style>
 /* ── RESET & BASE ── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -35,19 +43,19 @@ body {
   justify-content: space-between;
 }
 .logo {
-  font-size: 20px;
+  font-size: 30px;
   font-weight: 800;
   font-style: italic;
   color: #fff;
   letter-spacing: -0.5px;
   text-decoration: none;
 }
-.logo span { color: rgba(255,255,255,0.6); font-weight: 400; font-style: normal; font-size: 13px; letter-spacing: 0; margin-left: 4px; }
+.logo span { color: rgba(255,255,255,0.6); font-weight: 400; font-style: normal; font-size: 14px; letter-spacing: 0; margin-left: 6px; }
 
 /* ── HERO ── */
 .hero {
   background: #C41E1E;
-  padding: 28px 20px 36px;
+  padding: 8px 20px 14px;
   text-align: center;
   position: relative;
   overflow: hidden;
@@ -56,24 +64,24 @@ body {
   content: '';
   position: absolute;
   bottom: -1px; left: 0; right: 0;
-  height: 24px;
+  height: 10px;
   background: #F7F5F2;
   clip-path: ellipse(55% 100% at 50% 100%);
 }
 .hero h1 {
-  font-size: clamp(24px, 6vw, 36px);
+  font-size: clamp(16px, 4vw, 22px);
   font-weight: 800;
   color: #fff;
   letter-spacing: -0.5px;
-  line-height: 1.15;
-  margin-bottom: 8px;
+  line-height: 1.1;
+  margin-bottom: 2px;
 }
 .hero p {
-  font-size: 14px;
+  font-size: 12px;
   color: rgba(255,255,255,0.8);
   max-width: 400px;
   margin: 0 auto;
-  line-height: 1.5;
+  line-height: 1.3;
 }
 
 /* ── MAIN CONTAINER ── */
@@ -99,9 +107,9 @@ body {
   background: #fff;
   border: 1.5px solid #E0DDD8;
   border-radius: 10px;
-  padding: 10px 4px;
-  font-size: 11px;
-  font-weight: 600;
+  padding: 12px 4px;
+  font-size: 19px;
+  font-weight: 700;
   color: #888;
   cursor: pointer;
   text-align: center;
@@ -117,9 +125,9 @@ body {
 }
 .tab-btn .tab-num {
   display: block;
-  font-size: 10px;
+  font-size: 11px;
   opacity: 0.7;
-  margin-bottom: 1px;
+  margin-bottom: 2px;
 }
 
 /* ── PANELS ── */
@@ -782,11 +790,11 @@ body {
 <footer class="site-footer">
   <p>Built by EJ · <a href="https://firemondays.com">FIREMondays.com</a></p>
   <p style="margin-top:6px">This calculator is for educational purposes only and does not constitute financial advice. Consult a licensed financial advisor for personalized guidance.</p>
-  <div style="margin-top:16px;padding:14px 16px;background:#F0EDE8;border-radius:10px;text-align:left;font-size:11px;color:#666;line-height:1.7">
-    <strong style="color:#1A1A1A;display:block;margin-bottom:4px">🔒 Your Privacy — No Financial Data Collected</strong>
-    All calculations in this tool run entirely in your browser. No financial information you enter — including spending amounts, investment balances, income, or net worth — is ever transmitted, stored, or collected by FIREMondays or any third party. Your numbers stay on your device only.<br><br>
-    <strong style="color:#1A1A1A">Hosting:</strong> This site is hosted by GitHub Pages (github.com). GitHub may collect standard server access logs including IP addresses and browser information as part of normal web hosting operations — this is standard practice for any website. GitHub does not have access to any financial information entered into this calculator, as that data never leaves your browser.<br><br>
-    <strong style="color:#1A1A1A">California Residents (CCPA):</strong> In compliance with the California Consumer Privacy Act, FIREMondays does not sell, share, or collect any personal financial data entered into this calculator. No cookies, analytics, or data collection tools are used on this page. You have the right to know that nothing entered here is retained or processed beyond your own browser session. For GitHub's data practices, visit <a href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement" target="_blank" style="color:#C41E1E">GitHub's Privacy Statement</a>.
+  <div style="margin-top:16px;padding:12px 14px;background:#F0EDE8;border-radius:10px;text-align:left;font-size:8px;color:#666;line-height:1.6">
+    <strong style="color:#1A1A1A;display:block;margin-bottom:4px">🔒 Privacy</strong>
+    All calculations run entirely in your browser — no financial data you enter is ever transmitted or stored by FIREMondays. Your numbers never leave your device.<br><br>
+    <strong style="color:#1A1A1A">Analytics:</strong> This site uses Google Analytics to count visitors and traffic sources (no financial data collected). Hosting is via GitHub Pages, which logs standard server data (IP, browser type). Neither has access to anything you type into the calculator.<br><br>
+    <strong style="color:#1A1A1A">California (CCPA):</strong> FIREMondays does not sell or share your personal financial data. Nothing entered here is retained beyond your browser session. See <a href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement" target="_blank" style="color:#C41E1E">GitHub's Privacy Policy</a> and <a href="https://policies.google.com/privacy" target="_blank" style="color:#C41E1E">Google's Privacy Policy</a>.
   </div>
 </footer>
 
